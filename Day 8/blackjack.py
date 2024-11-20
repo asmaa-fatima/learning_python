@@ -1,8 +1,16 @@
 from blackjack_logo import logo 
 import random
+import os
 
 
 cards = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
+
+def calculate_score(hand):
+    score = sum(hand)
+    while score > 21 and 11 in hand:
+        hand[hand.index(11)] = 1
+        score = sum(hand)
+    return score    
 
 
 def blackjack():
@@ -10,19 +18,20 @@ def blackjack():
     dealer_cards = [random.choice(cards), random.choice(cards)]
     user_cards = [random.choice(cards), random.choice(cards)]
 
+    print(f"Your cards: {user_cards}, current score: {sum(user_cards)}")
+    print(f"Computer's first card: {dealer_cards[0]}")
+
     if sum(dealer_cards) == 21:
         print("Lose, opponent has Blackjack 😱")
     elif sum(user_cards) == 21:
         print("Win with a Blackjack 😎")
 
-    while sum(dealer_cards) < 17:
+    while calculate_score(dealer_cards) < 17:
         new_card = random.choice(cards)
         dealer_cards.append(new_card)
 
-    print(f"Your cards: {user_cards}, current score: {sum(user_cards)}")
-    print(f"Computer's first card: {dealer_cards[0]}")
 
-    while True and sum(user_cards) < 22:
+    while calculate_score(user_cards) < 22:
 
         card_pass = input("Type 'y' to get another card, type'n' to pass: ").lower()
         if card_pass == "y":
@@ -36,33 +45,29 @@ def blackjack():
         else:
             print("Invalid input Please type y/n.")
 
-    print(f"Your final hand: {user_cards}, final score: {sum(user_cards)} \nComputer's final hand: {dealer_cards}, final score: {sum(dealer_cards)}")
+    user_score = calculate_score(user_cards)
+    dealer_score = calculate_score(dealer_cards)
 
-    if sum(user_cards) > sum(dealer_cards):
-        if sum(user_cards) > 21:
+    print(f"Your final hand: {user_cards}, final score: {user_score} \nComputer's final hand: {dealer_cards}, final score: {dealer_score}")
+
+    if user_score > dealer_score:
+        if user_score > 21:
             print("You went over. You lose 😭")
         else:
             print("You WIN 😃")
-    elif sum(dealer_cards) > sum(user_cards):
-        if sum(dealer_cards) > 21 :
+    elif dealer_score > user_score:
+        if dealer_score > 21 :
             print("Opponent went over. You win 😁")            
         else:
             print("You lose 😤")
     else:
         print("DRAW 🙃")
 
-    begin_blackjack = input("Do you want to play a game of Blackjack? y/n: ").lower()
 
-    if begin_blackjack == 'y':
+def begin_blackjack():
+    while input("Do you want to play a game of Blackjack? y/n: ").lower() == 'y':
+        os.system("clear")
         print(logo)
         blackjack()
 
-
-begin_blackjack = input("Do you want to play a game of Blackjack? y/n: ").lower()
-
-if begin_blackjack == 'y':
-    print(logo)
-    blackjack()
-
-
-
+begin_blackjack()
